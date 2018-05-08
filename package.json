@@ -1,0 +1,36 @@
+{
+  "name": "salsify-cron-job",
+  "version": "1.0.0",
+  "description": "",
+  "main": "env.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "encrypt": "envdotjs",
+    "unencrypt": "envdotjs --unencrypt",
+    "invoke": "serverless invoke local --function salsifyCron",
+    "build": "serverless package"
+  },
+  "keywords": [],
+  "author": "Taylor Austin <taustin@escaladesports.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-3": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "esca-scripts": "^0.9.0",
+    "serverless": "^1.25.0",
+    "serverless-mocha-plugin": "^1.7.0",
+    "serverless-plugin-optimize": "^3.0.4-rc.1"
+  },
+  "dependencies": {
+    "envdotjs": "^1.1.8",
+    "isomorphic-fetch": "^2.2.1",
+    "middy": "^0.5.2",
+    "mongoose": "^5.0.17",
+    "serverless-offline": "^3.16.0"
+  }
+}
