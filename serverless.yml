@@ -6,6 +6,10 @@ provider:
   stage: ${opt:stage, 'development'}
   environment:
     NODE_ENV: ${opt:stage, 'development'}
+    ENVDOTJS_KEY: ${env:ENVDOTJS_KEY}
+    DB_URI: ${env:DB_URI}
+    SALSIFY_API_KEY: ${env:SALSIFY_API_KEY}
+    SALSIFY_ORG_ID: ${env:SALSIFY_ORG_ID}
 
 functions:
   salsifyCron:
