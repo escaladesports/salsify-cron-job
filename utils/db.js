@@ -1,3 +1,4 @@
+require('envdotjs').load();
 import envdotjs from 'envdotjs';
 import mongoose from 'mongoose';
 mongoose.Promise = global.Promise;
