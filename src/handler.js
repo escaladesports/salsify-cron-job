@@ -1,10 +1,11 @@
 require('envdotjs').load();
-const fetch = require('isomorphic-fetch');
-const middy = require('middy');
-const { jsonBodyParser, httpErrorHandler, cors } = require('middy/middlewares');
+import fetch from 'isomorphic-fetch';
+import middy from 'middy';
+import { jsonBodyParser, httpErrorHandler, cors } from 'middy/middlewares';
 
-const connectToDatabase = require('../utils/db');
-const Sheet = require('../models/Sheet');
+import { connectToDatabase } from '../utils/db';
+import Sheet from '../models/Sheet';
+import config from '../utils/config';
 
 module.exports.salsifyCron = middy(async (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
@@ -19,7 +20,7 @@ module.exports.salsifyCron = middy(async (event, context, callback) => {
       'Content-Type': 'application/json'
     }
   };
-  await connectToDataBase();
+  await connectToDatabase();
 
   const storedData = await Sheet.find({});
   if (
@@ -43,15 +44,19 @@ module.exports.salsifyCron = middy(async (event, context, callback) => {
     const res = await fetch(options.url, {
       method: 'POST',
       headers: options.headers,
-      body: JSON.stringify(require('../utils/config.json'))
+      body: JSON.stringify(config)
     }).then(res => res.json());
-
-    await Sheet.create({
-      sheetId: res.id,
-      url: null,
-      status: res.status
-    });
-    sheetId = res.id;
+    if (res.id && res.status) {
+      await Sheet.create({
+        sheetId: res.id,
+        url: null,
+        status: res.status
+      });
+      sheetId = res.id;
+    } else {
+      console.log(res);
+      process.exit(1);
+    }
   }
 
   const resWithId = await fetch(`${options.url}/${sheetId}`, {
@@ -59,7 +64,12 @@ module.exports.salsifyCron = middy(async (event, context, callback) => {
     headers: options.headers
   }).then(res => res.json());
 
+  if (resWithId.status === 'running') {
+    console.log('running cron job');
+    console.log(resWithId.estimated_time_remaining);
+  }
   if (resWithId.status === 'completed') {
+    console.log('completed cron job');
     await Sheet.findByIdAndUpdate(
       storedData[0],
       { status: resWithId.status, url: resWithId.url },

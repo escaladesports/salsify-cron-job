@@ -10,6 +10,7 @@ npm-debug.log*
 node_modules/
 
 # Development/Environment
+.env
 env.js
 envdotjs-key
 dist
