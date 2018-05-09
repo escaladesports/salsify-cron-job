@@ -3,7 +3,8 @@ cache:
   directories:
     - node_modules
 script:
-  - esca-scripts tset --serverless && esca-scripts deploy --serverless
+  - npm install -g serverless
+  - sls deploy
 notifications:
   email:
     on_failure: always
