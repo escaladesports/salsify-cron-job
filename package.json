@@ -10,8 +10,9 @@
     "build": "serverless package",
     "test": "esca-scripts test --serverless --stage staging",
     "logs": "serverless logs --function salsifyCron --tail",
-    "deploy": "serverless deploy -f salsifyCron",
-    "deploy-prod": "esca-scripts test --serverless --stage production && esca-scripts deploy --serverless --stage production --prompt"
+    "deploy": "serverless deploy --function salsifyCron",
+    "deploy-prod":
+      "esca-scripts test --serverless --stage production && esca-scripts deploy --serverless --stage production --prompt"
   },
   "keywords": [],
   "author": "Taylor Austin <taustin@escaladesports.com>",

@@ -34,6 +34,12 @@ module.exports.salsifyCron = middy(async (event, context, callback) => {
           storedData[0].status
         }, \nSheet url: ${storedData[0].url}`
     );
+    await fetch(
+      'https://api.netlify.com/build_hooks/5afaedde3672df6aad36f62b',
+      {
+        method: 'POST'
+      }
+    );
     process.exit(0);
     return;
   }
