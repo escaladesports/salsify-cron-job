@@ -8,9 +8,13 @@ const connectToDatabase = () => {
   if (isConnected) {
     return Promise.resolve();
   }
-  return mongoose.connect(process.env.DB_URI).then(db => {
-    isConnected = db.connections[0].readyState;
-  });
+  return mongoose
+    .connect(
+      'mongodb://tbaustin:password@ds141406.mlab.com:41406/salsify-test-api'
+    )
+    .then(db => {
+      isConnected = db.connections[0].readyState;
+    });
 };
 
 module.exports = {

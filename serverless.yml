@@ -28,8 +28,6 @@ package:
 plugins:
   - serverless-webpack
   - serverless-offline
-  # - serverless-plugin-optimize
-
 
 custom:
   webpack:

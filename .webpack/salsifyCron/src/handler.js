@@ -156,9 +156,9 @@ module.exports.salsifyCron = (0, _middy2.default)(function () {
             context.callbackWaitsForEmptyEventLoop = false;
             sheetId = void 0;
             options = {
-              url: 'https://app.salsify.com/api/orgs/' + process.env.SALSIFY_ORG_ID + '/export_runs',
+              url: 'https://app.salsify.com/api/orgs/s-9c2a072b-2f59-495e-b089-121deba82448/export_runs',
               headers: {
-                Authorization: 'Bearer ' + process.env.SALSIFY_API_KEY,
+                Authorization: 'Bearer f2653e0a682e8f524222533233bad7c54a0f5377d3920ddd302353bdb3652f42',
                 'Content-Type': 'application/json'
               }
             };
@@ -173,26 +173,29 @@ module.exports.salsifyCron = (0, _middy2.default)(function () {
             storedData = _context.sent;
 
             if (!(storedData.length > 0 && storedData[0] && storedData[0].status === 'completed' && storedData[0].url !== null)) {
-              _context.next = 13;
+              _context.next = 14;
               break;
             }
 
             console.log('Trigger WebHook');
-            _axios2.default.post('https://api.netlify.com/build_hooks/5afd9ca03672df1c2a63961a');
+            _context.next = 12;
+            return _axios2.default.post('https://api.netlify.com/build_hooks/5afd9ca03672df1c2a63961a');
+
+          case 12:
             process.exit(0);
             return _context.abrupt('return');
 
-          case 13:
+          case 14:
             if (storedData[0]) {
               sheetId = storedData[0].sheetId;
             }
 
             if (!(storedData.length === 0)) {
-              _context.next = 26;
+              _context.next = 27;
               break;
             }
 
-            _context.next = 17;
+            _context.next = 18;
             return (0, _isomorphicFetch2.default)(options.url, {
               method: 'POST',
               headers: options.headers,
@@ -201,32 +204,32 @@ module.exports.salsifyCron = (0, _middy2.default)(function () {
               return res.json();
             });
 
-          case 17:
+          case 18:
             res = _context.sent;
 
             if (!(res.id && res.status)) {
-              _context.next = 24;
+              _context.next = 25;
               break;
             }
 
-            _context.next = 21;
+            _context.next = 22;
             return _Sheet2.default.create({
               sheetId: res.id,
               url: null,
               status: res.status
             });
 
-          case 21:
+          case 22:
             sheetId = res.id;
-            _context.next = 26;
+            _context.next = 27;
             break;
 
-          case 24:
+          case 25:
             console.log(res);
             process.exit(1);
 
-          case 26:
-            _context.next = 28;
+          case 27:
+            _context.next = 29;
             return (0, _isomorphicFetch2.default)(options.url + '/' + sheetId, {
               method: 'GET',
               headers: options.headers
@@ -234,25 +237,43 @@ module.exports.salsifyCron = (0, _middy2.default)(function () {
               return res.json();
             });
 
-          case 28:
+          case 29:
             resWithId = _context.sent;
 
 
             if (resWithId.status === 'running') {
               console.log('running cron job');
               console.log(resWithId.estimated_time_remaining);
+              process.exit(0);
             }
 
             if (!(resWithId.status === 'completed')) {
-              _context.next = 34;
+              _context.next = 42;
               break;
             }
 
             console.log('completed cron job');
-            _context.next = 34;
+            _context.next = 35;
             return _Sheet2.default.findByIdAndUpdate(storedData[0], { status: resWithId.status, url: resWithId.url }, { new: true });
 
-          case 34:
+          case 35:
+            if (!(resWithId.status === 'completed' && resWithId.url !== null)) {
+              _context.next = 41;
+              break;
+            }
+
+            console.log('Trigger WebHook');
+            _context.next = 39;
+            return _axios2.default.post('https://api.netlify.com/build_hooks/5afd9ca03672df1c2a63961a');
+
+          case 39:
+            process.exit(0);
+            return _context.abrupt('return');
+
+          case 41:
+            process.exit(0);
+
+          case 42:
           case 'end':
             return _context.stop();
         }
@@ -308,12 +329,12 @@ __webpack_require__(/*! envdotjs */ "envdotjs").load();
 
 _mongoose2.default.Promise = global.Promise;
 var isConnected = void 0;
-var URI = 'mongodb://tbaustin:password@ds141406.mlab.com:41406/salsify-test-api';
+
 var connectToDatabase = function connectToDatabase() {
   if (isConnected) {
     return _promise2.default.resolve();
   }
-  return _mongoose2.default.connect(URI).then(function (db) {
+  return _mongoose2.default.connect('mongodb://tbaustin:password@ds141406.mlab.com:41406/salsify-test-api').then(function (db) {
     isConnected = db.connections[0].readyState;
   });
 };

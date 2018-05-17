@@ -12,11 +12,9 @@ module.exports.salsifyCron = middy(async (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
   let sheetId;
   const options = {
-    url: `https://app.salsify.com/api/orgs/${
-      process.env.SALSIFY_ORG_ID
-    }/export_runs`,
+    url: `https://app.salsify.com/api/orgs/s-9c2a072b-2f59-495e-b089-121deba82448/export_runs`,
     headers: {
-      Authorization: `Bearer ${process.env.SALSIFY_API_KEY}`,
+      Authorization: `Bearer f2653e0a682e8f524222533233bad7c54a0f5377d3920ddd302353bdb3652f42`,
       'Content-Type': 'application/json'
     }
   };
@@ -30,7 +28,9 @@ module.exports.salsifyCron = middy(async (event, context, callback) => {
     storedData[0].url !== null
   ) {
     console.log('Trigger WebHook');
-    axios.post('https://api.netlify.com/build_hooks/5afd9ca03672df1c2a63961a');
+    await axios.post(
+      'https://api.netlify.com/build_hooks/5afd9ca03672df1c2a63961a'
+    );
     process.exit(0);
     return;
   }
@@ -64,6 +64,7 @@ module.exports.salsifyCron = middy(async (event, context, callback) => {
   if (resWithId.status === 'running') {
     console.log('running cron job');
     console.log(resWithId.estimated_time_remaining);
+    process.exit(0);
   }
   if (resWithId.status === 'completed') {
     console.log('completed cron job');
@@ -72,6 +73,15 @@ module.exports.salsifyCron = middy(async (event, context, callback) => {
       { status: resWithId.status, url: resWithId.url },
       { new: true }
     );
+    if (resWithId.status === 'completed' && resWithId.url !== null) {
+      console.log('Trigger WebHook');
+      await axios.post(
+        'https://api.netlify.com/build_hooks/5afd9ca03672df1c2a63961a'
+      );
+      process.exit(0);
+      return;
+    }
+    process.exit(0);
   }
 })
   .use(cors())
