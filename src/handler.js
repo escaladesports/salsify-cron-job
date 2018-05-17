@@ -24,16 +24,11 @@ module.exports.salsifyCron = middy(async (event, context, callback) => {
 
   const storedData = await Sheet.find({});
   if (
+    storedData.length > 0 &&
     storedData[0] &&
     storedData[0].status === 'completed' &&
     storedData[0].url !== null
   ) {
-    console.log(
-      'There is already a completed sheet in the DB: \n' +
-        `Sheet ID: ${storedData[0].sheetId}, \nSheet status: ${
-          storedData[0].status
-        }, \nSheet url: ${storedData[0].url}`
-    );
     await fetch(
       'https://api.netlify.com/build_hooks/5afaedde3672df6aad36f62b',
       {
