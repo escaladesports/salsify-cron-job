@@ -11,8 +11,7 @@
     "test": "esca-scripts test --serverless --stage staging",
     "logs": "serverless logs --function salsifyCron --tail",
     "deploy": "serverless deploy --function salsifyCron",
-    "deploy-prod":
-      "esca-scripts test --serverless --stage production && esca-scripts deploy --serverless --stage production --prompt"
+    "deploy-prod": "esca-scripts test --serverless --stage production && esca-scripts deploy --serverless --stage production --prompt"
   },
   "keywords": [],
   "author": "Taylor Austin <taustin@escaladesports.com>",
@@ -39,6 +38,7 @@
     "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "babel-runtime": "^6.26.0",
     "envdotjs": "^1.1.8",
     "isomorphic-fetch": "^2.2.1",

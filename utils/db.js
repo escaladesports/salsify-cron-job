@@ -3,6 +3,7 @@ import envdotjs from 'envdotjs';
 import mongoose from 'mongoose';
 mongoose.Promise = global.Promise;
 let isConnected;
+
 const connectToDatabase = () => {
   if (isConnected) {
     return Promise.resolve();

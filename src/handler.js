@@ -1,5 +1,6 @@
 require('envdotjs').load();
 import fetch from 'isomorphic-fetch';
+import axios from 'axios';
 import middy from 'middy';
 import { jsonBodyParser, httpErrorHandler, cors } from 'middy/middlewares';
 
@@ -9,7 +10,6 @@ import config from '../utils/config';
 
 module.exports.salsifyCron = middy(async (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
-
   let sheetId;
   const options = {
     url: `https://app.salsify.com/api/orgs/${
@@ -29,12 +29,8 @@ module.exports.salsifyCron = middy(async (event, context, callback) => {
     storedData[0].status === 'completed' &&
     storedData[0].url !== null
   ) {
-    await fetch(
-      'https://api.netlify.com/build_hooks/5afd9ca03672df1c2a63961a',
-      {
-        method: 'POST'
-      }
-    );
+    console.log('Trigger WebHook');
+    axios.post('https://api.netlify.com/build_hooks/5afd9ca03672df1c2a63961a');
     process.exit(0);
     return;
   }

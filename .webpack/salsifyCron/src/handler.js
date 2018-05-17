@@ -121,6 +121,10 @@ var _isomorphicFetch = __webpack_require__(/*! isomorphic-fetch */ "isomorphic-f
 
 var _isomorphicFetch2 = _interopRequireDefault(_isomorphicFetch);
 
+var _axios = __webpack_require__(/*! axios */ "axios");
+
+var _axios2 = _interopRequireDefault(_axios);
+
 var _middy = __webpack_require__(/*! middy */ "middy");
 
 var _middy2 = _interopRequireDefault(_middy);
@@ -150,7 +154,6 @@ module.exports.salsifyCron = (0, _middy2.default)(function () {
         switch (_context.prev = _context.next) {
           case 0:
             context.callbackWaitsForEmptyEventLoop = false;
-
             sheetId = void 0;
             options = {
               url: 'https://app.salsify.com/api/orgs/' + process.env.SALSIFY_ORG_ID + '/export_runs',
@@ -169,32 +172,27 @@ module.exports.salsifyCron = (0, _middy2.default)(function () {
           case 7:
             storedData = _context.sent;
 
-            if (!(storedData[0] && storedData[0].status === 'completed' && storedData[0].url !== null)) {
-              _context.next = 14;
+            if (!(storedData.length > 0 && storedData[0] && storedData[0].status === 'completed' && storedData[0].url !== null)) {
+              _context.next = 13;
               break;
             }
 
-            console.log('There is already a completed sheet in the DB: \n' + ('Sheet ID: ' + storedData[0].sheetId + ', \nSheet status: ' + storedData[0].status + ', \nSheet url: ' + storedData[0].url));
-            _context.next = 12;
-            return (0, _isomorphicFetch2.default)('https://api.netlify.com/build_hooks/5afaedde3672df6aad36f62b', {
-              method: 'POST'
-            });
-
-          case 12:
+            console.log('Trigger WebHook');
+            _axios2.default.post('https://api.netlify.com/build_hooks/5afd9ca03672df1c2a63961a');
             process.exit(0);
             return _context.abrupt('return');
 
-          case 14:
+          case 13:
             if (storedData[0]) {
               sheetId = storedData[0].sheetId;
             }
 
             if (!(storedData.length === 0)) {
-              _context.next = 27;
+              _context.next = 26;
               break;
             }
 
-            _context.next = 18;
+            _context.next = 17;
             return (0, _isomorphicFetch2.default)(options.url, {
               method: 'POST',
               headers: options.headers,
@@ -203,32 +201,32 @@ module.exports.salsifyCron = (0, _middy2.default)(function () {
               return res.json();
             });
 
-          case 18:
+          case 17:
             res = _context.sent;
 
             if (!(res.id && res.status)) {
-              _context.next = 25;
+              _context.next = 24;
               break;
             }
 
-            _context.next = 22;
+            _context.next = 21;
             return _Sheet2.default.create({
               sheetId: res.id,
               url: null,
               status: res.status
             });
 
-          case 22:
+          case 21:
             sheetId = res.id;
-            _context.next = 27;
+            _context.next = 26;
             break;
 
-          case 25:
+          case 24:
             console.log(res);
             process.exit(1);
 
-          case 27:
-            _context.next = 29;
+          case 26:
+            _context.next = 28;
             return (0, _isomorphicFetch2.default)(options.url + '/' + sheetId, {
               method: 'GET',
               headers: options.headers
@@ -236,7 +234,7 @@ module.exports.salsifyCron = (0, _middy2.default)(function () {
               return res.json();
             });
 
-          case 29:
+          case 28:
             resWithId = _context.sent;
 
 
@@ -246,15 +244,15 @@ module.exports.salsifyCron = (0, _middy2.default)(function () {
             }
 
             if (!(resWithId.status === 'completed')) {
-              _context.next = 35;
+              _context.next = 34;
               break;
             }
 
             console.log('completed cron job');
-            _context.next = 35;
+            _context.next = 34;
             return _Sheet2.default.findByIdAndUpdate(storedData[0], { status: resWithId.status, url: resWithId.url }, { new: true });
 
-          case 35:
+          case 34:
           case 'end':
             return _context.stop();
         }
@@ -310,11 +308,12 @@ __webpack_require__(/*! envdotjs */ "envdotjs").load();
 
 _mongoose2.default.Promise = global.Promise;
 var isConnected = void 0;
+var URI = 'mongodb://tbaustin:password@ds141406.mlab.com:41406/salsify-test-api';
 var connectToDatabase = function connectToDatabase() {
   if (isConnected) {
     return _promise2.default.resolve();
   }
-  return _mongoose2.default.connect(process.env.DB_URI).then(function (db) {
+  return _mongoose2.default.connect(URI).then(function (db) {
     isConnected = db.connections[0].readyState;
   });
 };
@@ -322,6 +321,17 @@ var connectToDatabase = function connectToDatabase() {
 module.exports = {
   connectToDatabase: connectToDatabase
 };
+
+/***/ }),
+
+/***/ "axios":
+/*!************************!*\
+  !*** external "axios" ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("axios");
 
 /***/ }),
 
