@@ -16,7 +16,7 @@ functions:
     handler: src/handler.salsifyCron
     events:
       - schedule: 
-          rate: cron(*/20 * * * ? *)
+          rate: cron(*/15 * * * ? *)
           enabled: true
 
 package:
