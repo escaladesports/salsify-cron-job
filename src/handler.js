@@ -12,9 +12,11 @@ module.exports.salsifyCron = middy(async (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
   let sheetId;
   const options = {
-    url: `https://app.salsify.com/api/orgs/s-9c2a072b-2f59-495e-b089-121deba82448/export_runs`,
+    url: `https://app.salsify.com/api/orgs/${
+      process.env.SALSIFY_ORG_ID
+    }/export_runs`,
     headers: {
-      Authorization: `Bearer f2653e0a682e8f524222533233bad7c54a0f5377d3920ddd302353bdb3652f42`,
+      Authorization: `Bearer ${process.env.SALSIFY_API_KEY}`,
       'Content-Type': 'application/json'
     }
   };
