@@ -29,10 +29,7 @@ module.exports.salsifyCron = middy(async (event, context, callback) => {
     storedData[0].status === 'completed' &&
     storedData[0].url !== null
   ) {
-    console.log('Trigger WebHook');
-    await axios.post(
-      'https://api.netlify.com/build_hooks/5afd9ca03672df1c2a63961a'
-    );
+    console.log('Sheet Ready');
     process.exit(0);
     return;
   }
